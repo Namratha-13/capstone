@@ -22,7 +22,7 @@
 | Analytics DB | ClickHouse |
 | Relational DB | PostgreSQL |
 | Cache | Redis |
-| API Gateway | Node.js / Express |
+| API Gateway | Go (net/http) |
 | Frontend | React + Recharts |
 | Infrastructure | Docker + Kubernetes |
 
@@ -35,4 +35,15 @@ docker compose up
 ```
 
 ## Status
-🚧 Active development — 8-phase build, currently Phase 1
+🚧 Active development — 8-phase build, currently Phase 2
+
+| Phase | Description | Status |
+|---|---|---|
+| 01 | Infrastructure Setup | ✅ Done |
+| 02 | SDK & Ingestion API | ✅ Done |
+| 03 | Stream Processing | ⏳ Pending |
+| 04 | Query & Analytics Service | ⏳ Pending |
+| 05 | Anomaly Detection | ⏳ Pending |
+| 06 | Alerting & Notification | ⏳ Pending |
+| 07 | Dashboard Frontend | ⏳ Pending |
+| 08 | Load Testing & Hardening | ⏳ Pending |

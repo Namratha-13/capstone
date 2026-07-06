@@ -1,0 +1,15 @@
+{
+  "name": "observeai-sdk",
+  "version": "0.1.0",
+  "description": "JavaScript SDK for ObserveAI LLM Observability Platform",
+  "main": "src/index.js",
+  "type": "commonjs",
+  "scripts": {
+    "test": "jest --verbose"
+  },
+  "keywords": ["llm", "observability", "openai", "anthropic", "monitoring"],
+  "license": "MIT",
+  "devDependencies": {
+    "jest": "^29.7.0"
+  }
+}
