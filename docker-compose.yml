@@ -119,3 +119,61 @@ services:
     environment:
       KAFKA_CLUSTERS_0_NAME: local
       KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:29092
+
+  # ── Phase 2: Ingest API ──────────────────────────────────
+  ingest-api:
+    build:
+      context: ./services/ingest-api
+      dockerfile: Dockerfile
+    container_name: observeai-ingest-api
+    networks: [observeai-net]
+    depends_on:
+      kafka:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+    ports:
+      - "8001:8001"
+    environment:
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      POSTGRES_DB: observeai
+      POSTGRES_USER: observeai
+      POSTGRES_PASSWORD: localdev123
+      KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+      KAFKA_TOPIC_RAW_TRACES: raw-traces
+      INGEST_API_PORT: 8001
+    healthcheck:
+      test: ["CMD", "python3", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8001/healthz')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  # ── Phase 2: API Gateway (Go) ────────────────────────────
+  api-gateway:
+    build:
+      context: ./services/api-gateway
+      dockerfile: Dockerfile
+    container_name: observeai-api-gateway
+    networks: [observeai-net]
+    depends_on:
+      ingest-api:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    ports:
+      - "3000:3000"
+    environment:
+      GATEWAY_PORT: "3000"
+      INGEST_API_URL: http://ingest-api:8001
+      REDIS_HOST: redis
+      REDIS_PORT: "6379"
+      RATE_LIMIT_RPS: "100"
+      RATE_LIMIT_BURST: "200"
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:3000/healthz"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
