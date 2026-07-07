@@ -17,7 +17,7 @@ class TraceEventRequest(BaseModel):
 
     model: str = Field(..., min_length=1, max_length=100, examples=["gpt-4o"])
     prompt: str = Field(..., min_length=1)
-    response: str = Field(..., min_length=1)
+    response: str = Field(..., min_length=0)
     input_tokens: int = Field(..., ge=0)
     output_tokens: int = Field(..., ge=0)
     latency_ms: int = Field(..., ge=0)

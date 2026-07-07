@@ -177,3 +177,28 @@ services:
       timeout: 5s
       retries: 5
       start_period: 5s
+
+  # ── Phase 3: Kafka Consumer (Python) ─────────────────────
+  kafka-consumer:
+    build:
+      context: ./services/kafka-consumer
+      dockerfile: Dockerfile
+    container_name: observeai-kafka-consumer
+    networks: [observeai-net]
+    depends_on:
+      kafka:
+        condition: service_healthy
+      clickhouse:
+        condition: service_healthy
+    environment:
+      KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+      KAFKA_TOPIC_RAW_TRACES: raw-traces
+      KAFKA_CONSUMER_GROUP: observeai-consumer-group
+      CLICKHOUSE_HOST: clickhouse
+      CLICKHOUSE_PORT: 8123
+      CLICKHOUSE_DB: observeai
+      CLICKHOUSE_USER: default
+      CLICKHOUSE_PASSWORD: ""
+      BATCH_SIZE_THRESHOLD: "5"
+      BATCH_TIMEOUT_SECONDS: "2.0"
+    restart: on-failure
